@@ -24,10 +24,8 @@ if(isset($scenes[$scene]["notbefore_hour"]) and isset($scenes[$scene]["notafter_
 if(isset($scenes[$scene]["run_if_playing"]) and $scenes[$scene]["run_if_playing"] == false){
   if (squeezebox_is_playing($server,$player_id)) { 
     print "Scene will not interrupt current music. ";
-    if(isset($_GET["volume"])) {
-      print "Reset volume to $vol.";
-      file_get_contents("http://192.168.1.11:9000/anyurl?p0=mixer&p1=volume&p2=$vol&player=$player_id");
-    }
+    print "Reset volume to $vol.";
+    file_get_contents("http://192.168.1.11:9000/anyurl?p0=mixer&p1=volume&p2=$vol&player=$player_id");
     exit;
   } 
 }
