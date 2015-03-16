@@ -16,7 +16,12 @@ $scenes["sexytime"]["run_if_playing"] = true;
 
 $scenes["sleepytime"]["music_list"] = "./sleepytime.list";
 $scenes["sleepytime"]["volume_level"] = "20";
-$scenes["sleepytime"]["run_if_playing"] = false;
+$scenes["sleepytime"]["run_if_playing"] = true;
+
+$scenes["ampersand"]["music_list"] = "./ampersand.list";
+$scenes["ampersand"]["volume_level"] = "50";
+$scenes["ampersand"]["run_if_playing"] = true;
+
 
 $player_ids["bedroom"]="00%3A04%3A20%3A26%3Af7%3A20";
 

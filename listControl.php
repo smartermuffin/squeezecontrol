@@ -2,6 +2,33 @@
 
 require("./config.php");
 
+$add_scenes = array("sexytime","wakeup","ampersand","sleepytime");
+$players = array("kitchen", "bedroom");
+
+foreach($add_scenes as $s) {
+  $time = time();
+  print "<a href=\"/squeezeControl/listControl.php?player=bedroom&merge_into_scene=$s&time=$time\">Merge into $s</a><br />";
+}
+
+
+
+if(isset($_GET["player"]) && isset($_GET["merge_into_scene"]) && isset($_GET["time"]))
+{
+    if (time() -30 > $_GET["time"] ) {print "<br />Merge link expired"; exit;}
+
+    $player = $_GET["player"];
+    $player_id = $player_ids[$player];
+    store_albums($player_id,$store_album_buffer);
+    
+    print "<br /> <br />";
+    $scene = $_GET["merge_into_scene"];
+    $scene_list_file = $scenes[$scene]["music_list"];
+    merge_into_scene($scene_list_file, $store_album_buffer);
+
+   exit;
+
+}
+
 if(isset($_GET["player"])){
     $player = $_GET["player"];
     $player_id = $player_ids[$player]; 

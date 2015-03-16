@@ -1,5 +1,5 @@
 <?php
-$num_albums = 4;
+$num_albums = 5;
 $scene = $_GET["scene"];
 $player= $_GET["player"];
 $current_hour = date('H');
@@ -7,8 +7,16 @@ $current_hour = date('H');
 require("./config.php");
 require("./squeeze_functions.php");
 $player_id = $player_ids[$player];
+
+if ($scene == "stop") {
+   squeezebox_stop($server,$player_id);
+   exit;
+}
+
+
 $vol = $scenes[$scene]["volume_level"];
 $music_list_filename = $scenes[$scene]["music_list"];
+
 
 if(isset($_GET["volume"])) {
   $vol = $_GET["volume"];

@@ -16,4 +16,12 @@ function squeezebox_enqueue($server, $player_id, $path){
 
 
 
+function squeezebox_stop($server, $player_id) {
+   $url="http://$server:9000/anyurl?p0=stop&player=".$player_id;
+   file_get_contents($url);
+
+
+}
+
+
 ?>
