@@ -5,9 +5,17 @@ require("./config.php");
 $add_scenes = array("sexytime","wakeup","ampersand","sleepytime");
 $players = array("kitchen", "bedroom");
 
+if(isset($_GET["showList"])) {
+   $scene = $_GET["showList"];
+   $scene_list_file = $scenes[$scene]["music_list"];
+   show_list($scene, $scene_list_file);
+   exit;
+
+}
+
 foreach($add_scenes as $s) {
   $time = time();
-  print "<a href=\"/squeezeControl/listControl.php?player=bedroom&merge_into_scene=$s&time=$time\">Merge into $s</a><br />";
+  print "<a href=\"/squeezeControl/listControl.php?player=bedroom&merge_into_scene=$s&time=$time\">Merge into $s</a> <a href=\"/squeezeControl/listControl.php?showList=$s\">See $s</a><br />";
 }
 
 
@@ -29,6 +37,7 @@ if(isset($_GET["player"]) && isset($_GET["merge_into_scene"]) && isset($_GET["ti
 
 }
 
+
 if(isset($_GET["player"])){
     $player = $_GET["player"];
     $player_id = $player_ids[$player]; 
@@ -44,6 +53,15 @@ if(isset($_GET["merge_into_scene"])){
 }
 
 
+function show_list($scene,$scene_list_file){
+ $playlist = file_get_contents($scene_list_file); 
+ $playlist = str_replace("\n", "<br />", $playlist);
+
+ print "<a href=\"/squeezeControl/listControl.php\">back.. </a><br />";
+ print "<h1>List $scene</h1> <br />";
+ print $playlist;
+
+}
 
 function store_albums($player_id, $buffer_file_name){
   $playlist = file_get_contents("http://192.168.1.11:9000/status.m3u?player=$player_id");
@@ -52,13 +70,14 @@ function store_albums($player_id, $buffer_file_name){
 
   foreach(preg_split("/((\r?\n)|(\r\n?))/", $playlist) as $line){
     if (!strpos($line, "EXTURL") and $line != ""){
-      array_push($files, $line);
+       array_push($files, $line);
     }
   } 
 
   foreach ($files as $file){
      $slashpos = strrpos($file, "/");
      $dir = substr($file,0,$slashpos +1);
+     $dir = substr($dir,0,-1);
      $dirs[$dir]++;
   }
 
