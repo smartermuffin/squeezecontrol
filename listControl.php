@@ -1,8 +1,14 @@
+<style>
+td{
+   padding:5px 5px 5px 5px;
+}
+</style>
+
 <?php
 
 require("./config.php");
 
-$add_scenes = array("sexytime","wakeup","ampersand","sleepytime");
+$add_scenes = array("sexytime","wakeup","ampersand","sleepytime","jason","maura");
 $players = array("kitchen", "bedroom");
 
 if(isset($_GET["showList"])) {
@@ -12,12 +18,28 @@ if(isset($_GET["showList"])) {
    exit;
 
 }
-
+print "<table border=\"1\" style=\"font-size: 200%;\">";
 foreach($add_scenes as $s) {
   $time = time();
-  print "<a href=\"/squeezeControl/listControl.php?player=bedroom&merge_into_scene=$s&time=$time\">Merge into $s</a> <a href=\"/squeezeControl/listControl.php?showList=$s\">See $s</a><br />";
+  print "<tr><td>$s </td>";
+  print "<td><a href=\"/squeezeControl/listControl.php?player=bedroom&merge_into_scene=$s&time=$time\">Merge</a></td>"; 
+  print "<td> <a href=\"/squeezeControl/listControl.php?showList=$s\">Display</a></td>";
+  print "<td><a href=\"/squeezeControl/listControl.php?playscene=$s&onplayer=bedroom\">Bedroom</a></td>";
+  print "<td><a href=\"/squeezeControl/listControl.php?playscene=$s&onplayer=kitchen\">Kitchen</a></td>";
+  print "</tr>";
 }
+print "</table>";
 
+if (isset($_GET["playscene"]) && isset($_GET["onplayer"])) {
+  $scene=$_GET["playscene"];
+  $player=$_GET["onplayer"];
+  $output=file_get_contents("http://127.0.0.1/squeezeControl/playmusic.php?scene=$scene&player=$player");
+ 
+  header("Location: /squeezeControl/listControl.php"); 
+  print "<br />";
+  print $output;
+  exit;
+}
 
 
 if(isset($_GET["player"]) && isset($_GET["merge_into_scene"]) && isset($_GET["time"]))

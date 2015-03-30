@@ -22,7 +22,14 @@ $scenes["ampersand"]["music_list"] = "./ampersand.list";
 $scenes["ampersand"]["volume_level"] = "50";
 $scenes["ampersand"]["run_if_playing"] = true;
 
+$scenes["jason"]["music_list"] = "./jason.list";
+$scenes["jason"]["volume_level"] = "50";
+$scenes["jason"]["run_if_playing"] = true;
+
+$scenes["maura"]["music_list"] = "./maura.list";
+$scenes["maura"]["volume_level"] = "50";
+$scenes["maura"]["run_if_playing"] = true;
 
 $player_ids["bedroom"]="00%3A04%3A20%3A26%3Af7%3A20";
-
+$player_ids["kitchen"]="00%3A04%3A20%3A29%3Ac2%3A46";
 ?>
