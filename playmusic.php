@@ -14,9 +14,17 @@ if ($scene == "stop") {
 }
 
 
-$vol = $scenes[$scene]["volume_level"];
-$music_list_filename = $scenes[$scene]["music_list"];
+if ($scene == "setvolume"){
 
+  if(isset($_GET["volume"])) {
+  $vol = $_GET["volume"];
+  file_get_contents("http://192.168.1.11:9000/anyurl?p0=mixer&p1=volume&p2=$vol&player=$player_id");
+  }
+ exit;
+}
+
+
+$vol = $scenes[$scene]["volume_level"];
 
 if(isset($_GET["volume"])) {
   $vol = $_GET["volume"];
@@ -38,7 +46,9 @@ if(isset($scenes[$scene]["run_if_playing"]) and $scenes[$scene]["run_if_playing"
   } 
 }
 
+$music_list_filename = $scenes[$scene]["music_list"];
 $album_paths = array();
+$track_paths = array();
 
 $music_list_file = fopen($music_list_filename,"r") or die("cannot open file");
 while(!feof($music_list_file)) {
@@ -49,6 +59,17 @@ while(!feof($music_list_file)) {
 }
 fclose($music_list_file);
 
+if(isset($scenes[$scene]["track_list"])) {
+   $track_list_filename = $scenes[$scene]["track_list"];
+   $track_list_file = fopen($track_list_filename,"r") or die("cannot open file");
+   
+  while(!feof($track_list_file)) {
+  $path = fgets($track_list_file);
+  if ($path != ""){
+    array_push($track_paths, $path);
+  }}
+}
+
 
 file_get_contents("http://192.168.1.11:9000/anyurl?p0=stop&player=$player_id");
 file_get_contents("http://192.168.1.11:9000/anyurl?p0=mixer&p1=volume&p2=$vol&player=$player_id");
@@ -56,19 +77,45 @@ file_get_contents("http://192.168.1.11:9000/anyurl?p0=playlist&p1=clear&player=$
 
 print_r($album_paths);
 
+print_r($track_paths);
+
 print "<br / > <br />";
+insert_track_chance(10);
 while($num_albums > 0 and sizeof($album_paths) >0 ){
    $index =  mt_rand(0,sizeof($album_paths)-1);
    $path = $album_paths[$index];
-   print "Adding $path <br / >";
+   print "Adding album $path <br / >";
    squeezebox_enqueue($server,$player_id, $path);
    unset($album_paths[$index]);
    $album_paths = array_values($album_paths);
    $num_albums--;
+   insert_track_chance(80);
+   insert_track_chance(5);
 }
 
 file_get_contents("http://192.168.1.11:9000/anyurl?p0=play&player=$player_id");
 
+
+function insert_track_chance($percent){
+
+    $random = mt_rand(0,100);
+    if ($random < $percent){
+      insert_track();
+    }
+
+}
+
+function insert_track(){
+   global $track_paths, $server, $player_id;
+   
+   if(sizeof($track_paths) == 0) {return;}
+   $index =  mt_rand(0,sizeof($track_paths)-1);
+   $path = $track_paths[$index];
+   print "Adding track $path <br / >";
+   squeezebox_enqueue($server,$player_id, $path);
+   unset($track_paths[$index]);
+   $track_paths = array_values($track_paths);
+}
 
 
 ?>
